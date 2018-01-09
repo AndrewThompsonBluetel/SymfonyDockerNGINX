@@ -1,0 +1,25 @@
+version: '2'
+
+services:
+  app:
+    container_name: 'app'
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./src:/var/www/src:rw
+      - ./app:/var/www/app:rw
+      - ./web:/var/www/web:rw
+    env_file:
+     - .env
+
+  web:
+    container_name: 'web'
+    build:
+      context: 'nginx'
+      dockerfile: Dockerfile
+    volumes_from:
+      - app:ro
+    ports:
+      - "80:80"
+    command: /bin/bash -c "nginx -g 'daemon off;'"
